@@ -1,7 +1,6 @@
-import React from 'react'
-import IssueForm from '../../_components/IssueForm'
 import { prisma } from '@/prisma/client';
 import { notFound } from 'next/navigation';
+import IssueFormWrapper from '../../_components/IssueFormWrapper';
 
 const EditIssuePage = async ({ params }: { params: Promise<{ id: string }>}) => {
     const { id } = await params;
@@ -14,7 +13,7 @@ const EditIssuePage = async ({ params }: { params: Promise<{ id: string }>}) => 
         notFound();
 
   return (
-    <IssueForm issue={issue}/>
+    <IssueFormWrapper issue={issue}/>
   )
 }
 
