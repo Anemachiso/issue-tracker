@@ -1,12 +1,11 @@
 'use client';
 
-import React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation';
 import { FaBug } from "react-icons/fa";
 import classnames from 'classnames';
 import { useSession } from 'next-auth/react';
-import { Box, Container, Flex } from '@radix-ui/themes';
+import { Avatar, Box, Container, DropdownMenu, Flex, Text } from '@radix-ui/themes';
 
 const NavBar = () => {
 
@@ -38,7 +37,31 @@ const NavBar = () => {
                 </ul>
                 </Flex>
                 <Box>
-                    { status === 'authenticated' && (<Link href="/api/auth/signout">Log Out</Link>) }
+                    { status === 'authenticated' && (
+                        <DropdownMenu.Root>
+                            <DropdownMenu.Trigger>
+                                <button className="cursor-pointer rounded-full border-none bg-transparent p-0">
+                                    <Avatar
+                                    src={session.user!.image!}
+                                    fallback="?"
+                                    size="2"
+                                    radius="full"
+                                    className='cursor-pointer'
+                                    />
+                                </button>
+                            </DropdownMenu.Trigger>
+                            <DropdownMenu.Content>
+                                <DropdownMenu.Label>
+                                    <Text size="2">
+                                        {session.user!.email}
+                                    </Text> 
+                                </DropdownMenu.Label>
+                                <DropdownMenu.Item>
+                                    <Link href="/api/auth/signout">Log Out</Link>
+                                </DropdownMenu.Item>
+                            </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                    )}
                     { status === 'unauthenticated' && (<Link href="/api/auth/signin">Login</Link>) }
                 </Box>
             </Flex>
