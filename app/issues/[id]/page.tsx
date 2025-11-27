@@ -4,9 +4,14 @@ import { notFound } from 'next/navigation';
 import EditIssuePage from './EditIssuePage';
 import IssueDetails from './IssueDetails';
 import DeleteIssueButton from './DeleteIssueButton';
+import { getServerSession } from 'next-auth';
+import authOptions from '@/app/auth/authOptions';
+import AssigneeSelect from './AssigneeSelect';
 
 
 const IssueDetailPage = async ({ params }: { params: Promise<{ id: string }> }) => {
+
+    const session = await getServerSession(authOptions);
 
     const { id } = await params;
 
@@ -22,12 +27,13 @@ const IssueDetailPage = async ({ params }: { params: Promise<{ id: string }> }) 
             <Box className='md:col-span-4'>
                 <IssueDetails issue={issue}/>
             </Box>
-            <Box>
+            { session && (<Box>
                 <Flex direction="column" gap="4">
+                    <AssigneeSelect />
                     <EditIssuePage issueId={issue.id}/>
                     <DeleteIssueButton issueId={issue.id}/>
                 </Flex>
-            </Box>
+            </Box>)}
         </Grid>
     )
 }

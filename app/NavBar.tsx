@@ -5,7 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation';
 import { FaBug } from "react-icons/fa";
 import classnames from 'classnames';
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
 import { Avatar, Box, Container, DropdownMenu, Flex, Text } from '@radix-ui/themes';
 
 const NavBar = () => {
