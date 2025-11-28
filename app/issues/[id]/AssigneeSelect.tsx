@@ -5,6 +5,7 @@ import { Select } from '@radix-ui/themes'
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { Skeleton } from '@/app/components';
+import toast, { Toaster } from 'react-hot-toast';
 
 const AssigneeSelect = ({ issue }: { issue: Issue }) => {
 
@@ -19,14 +20,19 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
   if (error) return null;
 
   return (
+    <>
     <Select.Root
       defaultValue={issue.assignedToUserId ?? "unassigned"}
       onValueChange={(value) => {
         const assignedToUserId = value === "unassigned" ? null : value;
 
-        axios.patch(`/api/issues/${issue.id}`, {
-          assignedToUserId,
-        });
+        axios
+            .patch(`/api/issues/${issue.id}`, {
+                assignedToUserId,
+            })
+            .catch(() => {
+            toast.error("Changes could not be saved.");
+            });
       }}
     >
       <Select.Trigger placeholder='Assign...' />
@@ -45,6 +51,8 @@ const AssigneeSelect = ({ issue }: { issue: Issue }) => {
         </Select.Group>
       </Select.Content>
     </Select.Root>
+    <Toaster />
+    </>
   );
 };
 
