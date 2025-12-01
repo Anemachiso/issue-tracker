@@ -20,7 +20,6 @@ const IssueStatusFilter = () => {
     // Sync with URL params
     useEffect(() => {
         const status = searchParams.get('status');
-        console.log('Current status from URL:', status);
         if (status && ['OPEN', 'IN_PROGRESS', 'CLOSED'].includes(status)) {
             setValue(status);
         } else {
@@ -32,7 +31,6 @@ const IssueStatusFilter = () => {
         <Select.Root 
             value={value}
             onValueChange={(status) => {
-                console.log('Selected status:', status);
                 const query = status === 'ALL' ? '' : `?status=${status}`;
                 router.push(`/issues${query}`);
                 router.refresh(); // Force a refresh to update the data
