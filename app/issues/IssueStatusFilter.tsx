@@ -2,28 +2,52 @@
 
 import { Status } from '@prisma/client'
 import { Select } from '@radix-ui/themes'
-import React from 'react'
+import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react'
 
-const statuses: { label: string, value?: Status }[] = [
-    {label: 'All'},
-    {label: 'open', value: 'OPEN'},
-    {label: 'In progress', value: 'IN_PROGRESS'},
-    {label: 'closed', value: 'CLOSED'}
+const statuses: { label: string, value: Status | 'ALL' }[] = [
+    { label: 'All', value: 'ALL' },
+    { label: 'Open', value: 'OPEN' },
+    { label: 'In Progress', value: 'IN_PROGRESS' },
+    { label: 'Closed', value: 'CLOSED' }
 ];
 
 const IssueStatusFilter = () => {
-  return (
-    <Select.Root>
-        <Select.Trigger placeholder='Filter by status...' />
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const [value, setValue] = useState('ALL');
+    
+    // Sync with URL params
+    useEffect(() => {
+        const status = searchParams.get('status');
+        console.log('Current status from URL:', status);
+        if (status && ['OPEN', 'IN_PROGRESS', 'CLOSED'].includes(status)) {
+            setValue(status);
+        } else {
+            setValue('ALL');
+        }
+    }, [searchParams]);
+    
+    return (
+        <Select.Root 
+            value={value}
+            onValueChange={(status) => {
+                console.log('Selected status:', status);
+                const query = status === 'ALL' ? '' : `?status=${status}`;
+                router.push(`/issues${query}`);
+                router.refresh(); // Force a refresh to update the data
+            }}
+        >
+            <Select.Trigger placeholder='Filter by status...' />
             <Select.Content>
                 {statuses.map(status => (
-                    <Select.Item key={status.value || 'All'} value={status.value || 'All'}>
+                    <Select.Item key={status.value} value={status.value}>
                         {status.label}
-                    </Select.Item>)
-                )}
+                    </Select.Item>
+                ))}
             </Select.Content>
-    </Select.Root>
-  )
+        </Select.Root>
+    )
 }
 
 export default IssueStatusFilter
