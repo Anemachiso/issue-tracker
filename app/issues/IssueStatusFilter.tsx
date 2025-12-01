@@ -31,7 +31,12 @@ const IssueStatusFilter = () => {
         <Select.Root 
             value={value}
             onValueChange={(status) => {
-                const query = status === 'ALL' ? '' : `?status=${status}`;
+                const params = new URLSearchParams();
+                if(status) params.append('status', status);
+                if(searchParams.get('orderBy'))
+                    params.append('orderBy', searchParams.get('orderBy')!);
+
+                const query = params.size ? '?' + params.toString() : '';
                 router.push(`/issues${query}`);
                 router.refresh(); // Force a refresh to update the data
             }}
