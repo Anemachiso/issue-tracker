@@ -5,8 +5,8 @@ import { Select } from '@radix-ui/themes'
 import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 
-const statuses: { label: string, value: Status | 'ALL' }[] = [
-    { label: 'All', value: 'ALL' },
+const statuses: { label: string, value?: Status }[] = [
+    { label: 'All' },
     { label: 'Open', value: 'OPEN' },
     { label: 'In Progress', value: 'IN_PROGRESS' },
     { label: 'Closed', value: 'CLOSED' }
@@ -23,7 +23,7 @@ const IssueStatusFilter = () => {
         if (status && ['OPEN', 'IN_PROGRESS', 'CLOSED'].includes(status)) {
             setValue(status);
         } else {
-            setValue('ALL');
+            setValue('');
         }
     }, [searchParams]);
     
@@ -35,8 +35,11 @@ const IssueStatusFilter = () => {
                 if(status) params.append('status', status);
                 if(searchParams.get('orderBy'))
                     params.append('orderBy', searchParams.get('orderBy')!);
+                let query = '';
+                if(status && status !== 'ALL'){
+                    query = '?' + params.toString()
+                }
 
-                const query = params.size ? '?' + params.toString() : '';
                 router.push(`/issues${query}`);
                 router.refresh(); // Force a refresh to update the data
             }}
@@ -44,7 +47,7 @@ const IssueStatusFilter = () => {
             <Select.Trigger placeholder='Filter by status...' />
             <Select.Content>
                 {statuses.map(status => (
-                    <Select.Item key={status.value} value={status.value}>
+                    <Select.Item key={status.label} value={status.value || 'ALL'}>
                         {status.label}
                     </Select.Item>
                 ))}
